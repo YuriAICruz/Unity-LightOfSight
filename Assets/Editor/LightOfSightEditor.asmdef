@@ -1,0 +1,12 @@
+{
+    "name": "Graphene.LightOfSightEditor",
+    "references": [
+        "Graphene.LighOfSight"
+    ],
+    "optionalUnityReferences": [],
+    "includePlatforms": [
+        "Editor"
+    ],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false
+}
