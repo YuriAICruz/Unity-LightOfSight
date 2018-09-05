@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using UnityEditor;
 using System.Collections;
+using System.Linq;
 
 namespace LOS.Editor {
 
@@ -15,12 +16,12 @@ namespace LOS.Editor {
 		protected SerializedProperty _obstacleLayer;
 		protected SerializedProperty _material;
 		protected SerializedProperty _orderInLayer;
-		protected SerializedProperty _sortingLayer;
+		private LOSLightBase light;
 
 		protected virtual void OnEnable () {
 			serializedObject.Update();
 
-			var light = (LOSLightBase) target;
+			light = (LOSLightBase) target;
 
 			EditorUtility.SetSelectedWireframeHidden(light.GetComponent<Renderer>(), !LOSManager.instance.debugMode);
 
@@ -30,7 +31,6 @@ namespace LOS.Editor {
 			_coneAngle = serializedObject.FindProperty("coneAngle");
 			_faceAngle = serializedObject.FindProperty("faceAngle");
 			_color = serializedObject.FindProperty("color");
-			_sortingLayer = serializedObject.FindProperty("sortingLayer");
 			_orderInLayer = serializedObject.FindProperty("orderInLayer");
 			_material = serializedObject.FindProperty("material");
 		}
@@ -52,7 +52,15 @@ namespace LOS.Editor {
 
 			EditorGUILayout.Space();
 			EditorGUILayout.PropertyField(_color);
-			EditorGUILayout.PropertyField(_sortingLayer);
+
+			var layers = SortingLayer.layers.ToList();
+			var index = layers.FindIndex(x=>x.id == light.sortingLayer);
+			if (index == -1)
+				index = 0;
+			var layer = EditorGUILayout.Popup("Sorting Layer", index, layers.Select(x=>x.name).ToArray());
+			
+			light.sortingLayer = layers[layer].id;
+			
 			EditorGUILayout.PropertyField(_orderInLayer);
 			EditorGUILayout.PropertyField(_material);
 		}
